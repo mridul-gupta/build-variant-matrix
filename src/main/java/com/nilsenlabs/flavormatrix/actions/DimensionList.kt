@@ -153,9 +153,9 @@ class DimensionList {
 
     fun deselectDuplicates() {
         for (dimension in dimensions) {
-            val selectedFlavors = dimension.flavors.count { it.isSelected }
-            if (selectedFlavors > 1) {
-                dimension.flavors.forEach { it.isSelected = false }
+            val selectedFlavors = dimension.flavors.filter { it.isSelected }
+            if (selectedFlavors.size > 1) {
+                selectedFlavors.drop(1).forEach { it.isSelected = false }
             }
         }
     }

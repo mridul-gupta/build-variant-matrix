@@ -40,6 +40,13 @@ This is an open source project licensed under the Apache License v2.0.]]></descr
     <depends>org.jetbrains.android</depends>
     <depends>com.intellij.modules.androidstudio</depends>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <statusBarWidgetFactory
+                implementation="com.nilsenlabs.flavormatrix.actions.BuildVariantStatusBarWidgetFactory"
+                id="BuildVariantMatrixWidget"
+                order="first"/>
+    </extensions>
+
     <actions>
         <action id="SelectBuildVariantMatrixAction"
                 class="com.nilsenlabs.flavormatrix.actions.SelectBuildVariantMatrixAction"

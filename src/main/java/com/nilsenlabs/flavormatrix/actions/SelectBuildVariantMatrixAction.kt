@@ -119,21 +119,28 @@ class SelectBuildVariantMatrixAction : AnAction() {
             getLog().info("Staring variant update...")
             val dialog = VariantSelectorDialog(dimensions, androidModules, project)
             if (dialog.showAndGet()) {
-                // OK selected => Post variant selection back to Android Studio
+                var firstVariantName: String? = null
                 for (modulePair in androidModulePairs) {
-                    val andModule = modulePair.key ?: continue // it being null should not happen
+                    val andModule = modulePair.key ?: continue
                     try {
                         val moduleName = ReflectionAndroidModel.getModuleName(andModule) ?: continue
 
                         dimensions.getSelectedVariantFor(moduleName)?.let { vari ->
                             getLog().info("Module: $moduleName. Updating to variant $vari")
                             legacyUpdater.updateSelectedBuildVariant(project, modulePair.value, vari)
+                            if (firstVariantName == null) firstVariantName = vari
                         }
                     } catch (e: Exception) {
                         getLog().warn("Failed to update variant for module: ${e.message}")
                     }
                 }
                 LegacyBuildVariantUpdater.requestGradleSync(project)
+                val variant = firstVariantName
+                if (variant != null) {
+                    BuildVariantStatusBarWidgetFactory.setWidgetVariant(project, variant)
+                } else {
+                    BuildVariantStatusBarWidgetFactory.refreshWidget(project)
+                }
             }
         } catch (e: Exception) {
             getLog().error("An error occurred while trying to show the build variant matrix selector", e)
